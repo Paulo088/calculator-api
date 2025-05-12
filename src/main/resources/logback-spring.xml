@@ -1,0 +1,42 @@
+<configuration>
+    <property resource="application.properties" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/calculator-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="CLOUDWATCH" class="io.github.dibog.AwsLogAppender">
+        <awsConfig>
+            <credentials>
+                <accessKeyId>${aws.accessKeyId}</accessKeyId>
+                <secretAccessKey>${aws.secretAccessKey}</secretAccessKey>
+            </credentials>
+            <region>${aws.region}</region>
+        </awsConfig>
+        <groupName>${aws.group}</groupName>
+        <streamName>${aws.stream}</streamName>
+        <createLogGroup>true</createLogGroup>
+        <queueLength>100</queueLength>
+        <layout>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="CLOUDWATCH" />
+    </root>
+</configuration>
